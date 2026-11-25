@@ -58,7 +58,7 @@
     var items = [
       ['Protocols scanned', String(DATA.protocols_scanned), 'at or above $5M TVL'],
       ['Watchlist', String(DATA.watchlist_size), 'floor $' + (DATA.floor_usd / 1e6).toFixed(0) + 'M, no token recorded'],
-      ['Ranked', String(DATA.board_size), DATA.early_size + ' early finds below the floor'],
+      ['Ranked', String(DATA.board_size), DATA.early_size + ' beyond the watchlist'],
       ['Comparables fitted', String(m.model.comps), 'tokens already trading'],
       ['Walk-forward error', m.walk_forward.median_abs_log_err.toFixed(2) + ' dex', 'median, held out'],
       ['Leave-one-out error', m.leave_one_out.median_abs_log_err.toFixed(2) + ' dex', 'median, held out'],
@@ -185,9 +185,10 @@
     close.addEventListener('click', function () { state.selected = null; detailEl.hidden = true; renderBoard(); setHash(); });
     detailEl.appendChild(close);
     detailEl.appendChild(el('h2', null, '#' + r.rank + '  ' + r.name));
+    var floorNote = WATCH[r.slug] ? 'on the watchlist. ' : (r.tvl_usd >= DATA.floor_usd ? 'above the watchlist floor. ' : 'below the watchlist floor. ');
     detailEl.appendChild(el('p', 'meta', r.slug + ' · ' + (r.category || 'no category') + ' · ' + r.chains.join(', ') +
       ' · listed ' + (r.listed_at || 'date unknown') + ' (' + fmtAge(r.age_days) + ') · ' +
-      (WATCH[r.slug] ? 'on the watchlist. ' : 'below the watchlist floor. ') + 'Records no token.'));
+      floorNote + 'Records no token.'));
     var grid = el('dl', 'detail-grid');
     var facts = [
       ['Implied value', fmtUsd(r.implied_value_usd), 'fitted, not the market'],
